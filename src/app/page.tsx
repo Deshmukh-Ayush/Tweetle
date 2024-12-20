@@ -14,10 +14,16 @@ export default function Home() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
-    axios
-      .get("/api/blogs")
-      .then((res) => res.data)
-      .then((data) => setBlogs(data));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/blogs");
+        setBlogs(response.data);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        alert("Error displaying the blogs");
+      }
+    };
+    fetchData();
   }, []);
 
   return (
@@ -30,12 +36,13 @@ export default function Home() {
       </SignedIn>
       <h1 className="text-2xl">Tweetle</h1>
       <h1>All Blogs</h1>
-      {blogs.map((blog) => (
-        <div key={blog.id}>
-          <h2>By: {blog.author.email}</h2>
-          <p>Content: {blog.content}</p>
-        </div>
-      ))}
+      {blogs.length > 0 &&
+        blogs.map((blog) => (
+          <div key={blog.id}>
+            <h2>By: {blog.author.email}</h2>
+            <p>Content: {blog.content}</p>
+          </div>
+        ))}
     </div>
   );
 }
