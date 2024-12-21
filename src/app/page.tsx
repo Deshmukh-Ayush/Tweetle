@@ -1,31 +1,27 @@
 "use client";
 
-interface Blog {
-  id: string;
-  content: string;
-  author: { email: string };
-}
-
+import PostForm from "@/components/PostForm";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import axios from "axios";
 import { useEffect, useState } from "react";
 
+type Post = {
+  id: string;
+  content: string;
+  createdAt: string;
+};
+
 export default function Home() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/api/blogs");
-        setBlogs(response.data);
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-        alert("Error displaying the blogs");
-      }
+    const fetchPosts = async () => {
+      const res = await fetch("/api/posts");
+      const data = await res.json();
+      setPosts(data);
     };
-    fetchData();
-  }, []);
 
+    fetchPosts();
+  }, []);
   return (
     <div>
       <SignedOut>
@@ -34,15 +30,17 @@ export default function Home() {
       <SignedIn>
         <UserButton />
       </SignedIn>
-      <h1 className="text-2xl">Tweetle</h1>
-      <h1>All Blogs</h1>
-      {blogs.length > 0 &&
-        blogs.map((blog) => (
-          <div key={blog.id}>
-            <h2>By: {blog.author.email}</h2>
-            <p>Content: {blog.content}</p>
-          </div>
-        ))}
+
+      <div>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <p>{post.content}</p>
+              <small>{new Date(post.createdAt).toLocaleString()}</small>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
