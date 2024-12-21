@@ -15,8 +15,11 @@ export async function POST(req: Request) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const { content } = req.json();
+  interface RequestBody {
+    content: string;
+  }
+  const body: RequestBody = await req.json();
+  const content = body.content;
 
   if (!content || content.trim() === "") {
     return NextResponse.json({ error: "Content is required" }, { status: 400 });

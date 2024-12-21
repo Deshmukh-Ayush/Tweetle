@@ -1,43 +1,36 @@
 "use client";
 
-import axios from "axios";
 import { useState } from "react";
 
 export default function CreatePost() {
   const [content, setContent] = useState("");
 
-  const handleSubmit = async () => {
-    const res = await axios.post("/api/create-post", {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await fetch("/api/posts", {
       method: "POST",
-      headers: { "Content-Type": "application/jsonj" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),
-      status: 201,
     });
-
-    if (res.status === 201) {
-      alert("Post created successfully");
-      setContent("");
-    } else {
-      alert("Failed to create post");
-    }
+    setContent("");
   };
-
   return (
     <div>
       <h1>Create Post</h1>
-      <input
-        type="text"
-        placeholder="Write your content here"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="border border-gray-400 rounded p-2 text-black"
-      />
-      <button
-        onClick={handleSubmit}
-        className="bg-blue-600 text-white p-2 rounded ml-2"
-      >
-        Submit
-      </button>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          placeholder="Whats on your mind?"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="border border-gray-400 rounded text-black"
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 text-white p-2 rounded ml-2"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 }

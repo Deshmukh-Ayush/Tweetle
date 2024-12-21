@@ -24,14 +24,18 @@ export default function Home() {
   }, []);
   return (
     <div>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
+      <div className="flex justify-end m-5">
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </div>
 
       <div>
+        <h1 className="text-5xl">Tweetle</h1>
+        <h2 className="text-3xl mt-2 ml-2">Posts</h2>
         <ul>
           {posts.map((post) => (
             <li key={post.id}>
